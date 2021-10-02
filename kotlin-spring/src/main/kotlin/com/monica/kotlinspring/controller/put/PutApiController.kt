@@ -3,6 +3,9 @@ package com.monica.kotlinspring.controller.put
 import com.monica.kotlinspring.model.http.Result
 import com.monica.kotlinspring.model.http.UserRequest
 import com.monica.kotlinspring.model.http.UserResponse
+import org.springframework.http.ResponseEntity
+import org.springframework.validation.BindingResult
+import org.springframework.validation.FieldError
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -20,8 +23,20 @@ class PutApiController {
     }
 
     @PutMapping(path = ["/put-mapping/object"])
-    fun putMappingObject(@RequestBody userRequest: UserRequest): UserResponse {
+    fun putMappingObject(@RequestBody userRequest: UserRequest, bindingResult: BindingResult): ResponseEntity<String> {
 
+        if (bindingResult.hasErrors()) {
+            // 500 error
+            val msg = StringBuilder()
+            bindingResult.allErrors.forEach {
+                val field = it as FieldError
+                val message = it.defaultMessage
+                msg.append("$field.field : $message\n")
+            }
+            return ResponseEntity.badRequest().body(msg.toString())
+        }
+        return ResponseEntity.ok("")
+        /*
         // 0. Response
         return UserResponse().apply {
             // 1. result
@@ -52,6 +67,9 @@ class PutApiController {
             })
 
             this.userRequest = userList
+
+
         }
+         */
     }
 }
