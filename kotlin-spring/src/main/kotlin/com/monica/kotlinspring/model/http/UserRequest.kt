@@ -1,5 +1,6 @@
 package com.monica.kotlinspring.model.http
 
+import com.monica.kotlinspring.annotation.StringFormatDateTime
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.validation.constraints.*
@@ -22,15 +23,6 @@ data class UserRequest(
     @field:Pattern(regexp = "^\\d{2,3}-\\{3,4}-\\d{4}\$")
     var phoneNumber:String?=null, // phone_number
 
+    @StringFormatDateTime(pattern = "yyyy-MM-dd HH:mm:ss", message = "패턴이 올바르지 않습니다.")
     var createdAt:String?=null // yyyy-MM-dd HH:mm:ss
-) {
-    @AssertTrue(message = "생성일자의 패턴은 yyyy-MM-dd HH:mm:ss 여야 합니다")
-    private fun isValidCreatedAt():Boolean { // 정상 true, 비정상 false
-        return try {
-            LocalDateTime.parse(this.createdAt, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-            true
-        } catch (e:Exception) {
-            false
-        }
-    }
-}
+)
